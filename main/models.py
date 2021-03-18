@@ -14,7 +14,7 @@ class Auths(models.Model):
     EmailConfirmed=models.BooleanField()
 
     class Meta:
-        db_table='Auths'
+        db_table='public\".\"Auths'
 
 
 class EmployeeOwners(models.Model):
@@ -33,7 +33,7 @@ class EmployeeOwners(models.Model):
     id_user=models.ForeignKey(Auths, on_delete=models.CASCADE, db_column='id_user')
 
     class Meta:
-        db_table = "EmployeeOwners"
+        db_table = 'public\".\"EmployeeOwners'
 
 
 class dayOfWorks(models.Model):
@@ -42,7 +42,7 @@ class dayOfWorks(models.Model):
     dttmEnd=models.DateTimeField()
     accountId=models.IntegerField()
     class Meta:
-        db_table = "dayOfWorks"
+        db_table = 'public\".\"dayOfWorks'
 
     def __str__(self):
         return '{0}-{1}'.format(self.dttmStart, self.dttmEnd)
@@ -58,7 +58,7 @@ class Tokens(models.Model):
     access_expire=models.DateTimeField()
     refresh_expire=models.DateTimeField()
     class Meta:
-        db_table='Tokens'
+        db_table='public\".\"Tokens'
 
 class Accounts(models.Model):
     id=models.IntegerField(primary_key=True)
@@ -70,7 +70,7 @@ class Accounts(models.Model):
     update=models.DateTimeField()
 
     class Meta:
-        db_table = "Accounts"
+        db_table = 'public\".\"Accounts'
 
 
 
@@ -83,7 +83,8 @@ class conctereDays(models.Model):
     comment=models.TextField()
     daysof=models.ForeignKey(dayOfWorks, on_delete=models.CASCADE, db_column='daysof')
     class Meta:
-        db_table = "conctereDays"
+        db_table = 'public\".\"conctereDays'
+
 
 
 class Clients(models.Model):
@@ -95,5 +96,5 @@ class Clients(models.Model):
      id_user=models.ForeignKey(Auths, on_delete=models.CASCADE, db_column='id_user')
      status=models.CharField(max_length=20)
      class Meta:
-        db_table = "Clients"
+        db_table = 'public\".\"Clients'
 # Create your models here.
