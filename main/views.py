@@ -18,6 +18,7 @@ class ListTodo(generics.ListAPIView):
 
 @api_view(['GET'])
 def api_root(request, format=None):
+  try:
     auth=get_authorization_header(request).decode('utf8')
     auth=Auths.objects.filter(tokens__access=auth.split(' ')[1]).first()
     if (auth==None):
@@ -51,11 +52,10 @@ def api_root(request, format=None):
     answer={'count':len(data.index), 'cancelled':len(cancel), 'price':price, 'new':count_new, 'avg':mean, 'confirm': len(avg.index)}
    # data=data.loc[data['dttmStart']<datetime.now()]
     return Response(data={'responce':answer, 'status':{'code':200, 'message':None}},status=200)
+  except Exception as e:
+      print(str(e))
 
-# class DetailTodo(generics.RetrieveAPIView):
-#     day = dayOfWorks.objects.all()
-#     con = conctereDays.objects.all()
-#     queryset = list(chain(day,con))
-#     print(queryset)
-#   #  queryset=dayOfWorks.objects.all()
-#     serializer_class = TodoSerializer
+class DetailTodo(generics.RetrieveAPIView):
+    queryset = dayOfWorks
+  #  queryset=dayOfWorks.objects.all()
+    serializer_class = TodoSerializer
