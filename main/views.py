@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from itertools import chain
 import pandas as pd
 from rest_framework.authentication import get_authorization_header
 # Create your views here.
@@ -53,10 +52,10 @@ def api_root(request, format=None):
    # data=data.loc[data['dttmStart']<datetime.now()]
     return Response(data={'responce':answer, 'status':{'code':200, 'message':None}},status=200)
 
-class DetailTodo(generics.RetrieveAPIView):
-    day = dayOfWorks.objects.all()
-    con = conctereDays.objects.all()
-    queryset = list(chain(day,con))
-    print(queryset)
-  #  queryset=dayOfWorks.objects.all()
-    serializer_class = TodoSerializer
+# class DetailTodo(generics.RetrieveAPIView):
+#     day = dayOfWorks.objects.all()
+#     con = conctereDays.objects.all()
+#     queryset = list(chain(day,con))
+#     print(queryset)
+#   #  queryset=dayOfWorks.objects.all()
+#     serializer_class = TodoSerializer
