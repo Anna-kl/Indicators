@@ -5,4 +5,5 @@ sqlalchemy
 psycopg2
 psycopg2-binary
 django-cors-headers
-
+django_heroku
+gunicorn
