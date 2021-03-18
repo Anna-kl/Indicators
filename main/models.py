@@ -14,7 +14,7 @@ class Auths(models.Model):
     EmailConfirmed=models.BooleanField()
 
     class Meta:
-        db_table='\"public."Auths"\"'
+        db_table='Auths'
 
 
 class EmployeeOwners(models.Model):
@@ -33,7 +33,7 @@ class EmployeeOwners(models.Model):
     id_user=models.ForeignKey(Auths, on_delete=models.CASCADE, db_column='id_user')
 
     class Meta:
-        db_table = 'public\".\"EmployeeOwners'
+        db_table = 'EmployeeOwners'
 
 
 class dayOfWorks(models.Model):
@@ -42,7 +42,7 @@ class dayOfWorks(models.Model):
     dttmEnd=models.DateTimeField()
     accountId=models.IntegerField()
     class Meta:
-        db_table = 'public\".\"dayOfWorks'
+        db_table = 'dayOfWorks'
 
     def __str__(self):
         return '{0}-{1}'.format(self.dttmStart, self.dttmEnd)
@@ -70,7 +70,7 @@ class Accounts(models.Model):
     update=models.DateTimeField()
 
     class Meta:
-        db_table = 'public\".\"Accounts'
+        db_table = 'Accounts'
 
 
 
@@ -83,7 +83,7 @@ class conctereDays(models.Model):
     comment=models.TextField()
     daysof=models.ForeignKey(dayOfWorks, on_delete=models.CASCADE, db_column='daysof')
     class Meta:
-        db_table = 'public\".\"conctereDays'
+        db_table = 'conctereDays'
 
 
 
