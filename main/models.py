@@ -14,7 +14,7 @@ class Auths(models.Model):
     EmailConfirmed=models.BooleanField()
 
     class Meta:
-        db_table='public\".\""Auths"'
+        db_table='"Auths"'
 
 
 class EmployeeOwners(models.Model):
