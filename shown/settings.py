@@ -98,7 +98,6 @@ DATABASES = {
         'HOST': '185.220.35.179',
 
         'PORT': '5432',
-
     }
 
 }
@@ -151,3 +150,5 @@ CORS_ORIGIN_REGEX_WHITELIST = [
     'http://localhost:4200',
 ]
 django_heroku.settings(locals())
+import dj_database_url
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
