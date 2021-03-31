@@ -98,3 +98,17 @@ class Clients(models.Model):
      class Meta:
         db_table = 'public\".\"Clients'
 # Create your models here.
+
+
+class StaffService(models.Model):
+     id=models.IntegerField(primary_key=True)
+     price=models.FloatField()
+     name=models.CharField(max_length=100)
+     describe=models.TextField()
+     minute=models.IntegerField()
+     account_id=models.ForeignKey(EmployeeOwners, on_delete=models.CASCADE, db_column='account_id')
+     category=models.IntegerField()
+
+     class Meta:
+        db_table = 'Services'
+
