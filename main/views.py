@@ -35,6 +35,17 @@ def record_time(data):
         data['price_y']=0
     return data
 
+def record_week(data):
+    if data['iscanceled']==False:
+            if data['dttm_end']>datetime.now()-timedelta(days=14) and data['dttm_end']<datetime.now()-timedelta(days=7):
+                data['price_pr']=data['price_y']
+            else:
+                data['price_new']=data['price_y']
+    else:
+
+        data['price_y']=0
+    return data
+
 @api_view(['GET'])
 def api_root(request, format=None):
   try:
@@ -169,41 +180,51 @@ def get_staff(request, format=None):
     if (auth==None):
        return Response (status=404, data={'response': None, 'status':{'code':404, 'message':'User not found'}})
    # auth=Tokens.objects.filter(access=auth.split(' ')[1]).first()
-    account=Accounts.objects.filter(id_user=auth.id).first()
-    staff=EmployeeOwners.objects.filter(id_owner=account.id).values('id').first().values()
+    account=EmployeeOwners.objects.filter(id_user=auth.id).first()
+   # staff=EmployeeOwners.objects.filter(id_owner=account.id).values('id').first().values()
 
     engine=create_engine('postgresql://postgres:2537300@185.220.35.179:5432/postgres', echo=False)
     data=pd.read_sql_table('dayOfWorks',con=engine, schema='public')
 
 
-    data=data.loc[(data['accountId'].isin(staff))]
+  #  data=data.loc[(data['accountId'].isin(staff))]
     concrete=pd.read_sql_table('conctereDays',con=engine, schema='public')
-    concrete['date']=concrete['dttm_start'].dt.date
+    # concrete=concrete.loc[concrete['account_id']==account.id]
+    # concrete['date']=concrete['dttm_start'].dt.date
    # t=datetime.strptime(concrete[1]['dttm_end'], '%YY-%mm-%dd %HH:%MM')
-    concrete=concrete.loc[concrete['date']==datetime.now().date()]
+    d=datetime.now().date()
+    concrete_day=concrete.loc[concrete['dttm_start'].dt.date==datetime.now().date()]
     service=pd.read_sql_table('Services',con=engine, schema='public')
-    concrete=concrete.merge(service, how='left', left_on=['services_id'], right_on=['id'])
-    data=data.merge(concrete, how='inner', left_on=['id'], right_on=['daysof'])
+    concrete_day=concrete_day.merge(service, how='left', left_on=['services_id'], right_on=['id'])
+    data_d=data.merge(concrete_day, how='inner', left_on=['id'], right_on=['daysof'])
     answer={}
-    data=data.apply(record, axis=1)
-    all_price=data.groupby(by=['accountId']).agg({'price_y':np.sum}).to_dict()
-    current=data.groupby(by=['accountId']).agg({'price_x':np.sum}).to_dict()
+    data_d=data_d.apply(record_time, axis=1)
+    all_price_d=data_d.groupby(by=['accountId']).agg({'price_y':np.sum}).to_dict()
+    current_d=data_d.groupby(by=['accountId']).agg({'price_x':np.sum}).to_dict()
     #mean=data.groupby(by=['accountId']).agg({price})
+    dttm_s=datetime.now()-timedelta(days=14)
+    concrete_week=concrete.loc[(concrete['dttm_start']>dttm_s)&(concrete['dttm_start']<datetime.now())]
 
+    concrete_week=concrete_week.merge(service, how='left', left_on=['services_id'], right_on=['id'])
+    data_s=data.merge(concrete_week, how='inner', left_on=['id'], right_on=['daysof'])
+    answer={}
+    data_s=data_s.apply(record_week, axis=1)
+    all_price_s=data_s.groupby(by=['accountId']).agg({'price_pr':np.sum}).to_dict()
+    current_s=data_s.groupby(by=['accountId']).agg({'price_new':np.sum}).to_dict()
    # price=data['price'].sum()
    # avg=data.loc[data['iscanceled']==False]
   #  mean=avg['price'].mean()
-    answer=[]
-    for n in staff:
-        new_client={}
-        new_client['accountId']=n
-        try:
-            new_client['sum']=current['price_x'][n]/all_price['price_x'][n]
-        except:
+    answer={}
+    try:
+        answer['now']=int((current_d['price_x'][account.id]/all_price_d['price_y'][account.id])*100)
+    except:
+        answer['now']=-1
 
-            new_client['sum']=0
+    try:
+        answer['week']=int((current_s['price_new'][account.id]/all_price_s['price_pr'][account.id])*100)
 
-        answer.append(new_client)
+    except:
+        answer['week']=-1
 
   #  answer={'count':len(data.index), 'cancelled':len(cancel), 'price':price, 'new':count_new, 'avg':mean, 'confirm': len(avg.index)}
    # data=data.loc[data['dttmStart']<datetime.now()]
