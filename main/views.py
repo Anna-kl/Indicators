@@ -39,6 +39,7 @@ def record_week(data):
     if data['iscanceled']==False:
             if data['dttm_end']>datetime.now()-timedelta(days=14) and data['dttm_end']<datetime.now()-timedelta(days=7):
                 data['price_pr']=data['price_y']
+                data['price_new']=0
             else:
                 data['price_new']=data['price_y']
     else:
