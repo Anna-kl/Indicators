@@ -85,6 +85,7 @@ def api_root(request, format=None):
  #   concrete_c=concrete_c.merge(service, how='left', left_on=['services_id'], right_on=['id'])
   #  data_c=data.merge(concrete_c, how='inner', left_on=['id'], right_on=['daysof'])
     data_c=concrete_c.apply(record, axis=1)
+
     all_price_c=data_c.groupby(by=['accountId']).agg({'price_y':np.sum}).to_dict()
     current_c=data_c.groupby(by=['accountId']).agg({'price_x':np.sum}).to_dict()
   ######################################
@@ -210,8 +211,10 @@ def get_staff(request, format=None):
     data_s=data.merge(concrete_week, how='inner', left_on=['id'], right_on=['daysof'])
     answer={}
     data_s=data_s.apply(record_week, axis=1)
-    all_price_s=data_s.groupby(by=['accountId']).agg({'price_pr':np.sum}).to_dict()
-    current_s=data_s.groupby(by=['accountId']).agg({'price_new':np.sum}).to_dict()
+    if (data_s.index=='price_pr').any():
+        all_price_s=data_s.groupby(by=['accountId']).agg({'price_pr':np.sum}).to_dict()
+    if (data_s.index=='price_new').any():
+        current_s=data_s.groupby(by=['accountId']).agg({'price_new':np.sum}).to_dict()
    # price=data['price'].sum()
    # avg=data.loc[data['iscanceled']==False]
   #  mean=avg['price'].mean()
