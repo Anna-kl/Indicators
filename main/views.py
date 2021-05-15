@@ -187,7 +187,7 @@ def api_root1(request, format=None):
             new_client['canceled']=0
         new_client['id']=n
         new_client['complete']=complete[n]
-        new_client['new']=count_new
+        new_client['new_с']=count_new
         try:
             new_client['current'] = current_c['price_x'][n]/all_price_c['price_x'][n]
         except:
