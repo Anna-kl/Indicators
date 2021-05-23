@@ -219,7 +219,6 @@ def api_root2(request, format=None):
     concrete=concrete.merge(service, how='left', left_on=['services_id'], right_on=['id'])
 
     complete = concrete.groupby(by=['name'])['name'].count().to_dict()
-    print(complete)
  #    data=data.merge(concrete, how='inner', left_on=['id'], right_on=['daysof'])
  #    data=data.merge(client, how='left', left_on=['client_id'], right_on=['id'])
  #    answer={}
