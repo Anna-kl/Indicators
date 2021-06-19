@@ -55,8 +55,20 @@ def api_root(request, format=None):
     if (auth==None):
        return Response (status=404, data={'response': None, 'status':{'code':404, 'message':'User not found'}})
    # auth=Tokens.objects.filter(access=auth.split(' ')[1]).first()
-    account=Accounts.objects.filter(id_user=auth.id).first()
-    staff=EmployeeOwners.objects.filter(id_owner=account.id).values('id').all()
+   # account=Accounts.objects.filter(id_user=auth.id).first()
+    account = Accounts.objects.filter(id_user=auth.id).first()
+    if EmployeeOwners.objects.filter(id_owner=account.id).values('id').count() == 0:
+        answer={}
+        answer['sum'] = 0
+        answer['canceled'] = 0
+        answer['orders'] = 0
+        answer['id'] = 0
+        answer['complete'] = 0
+        answer['clients'] = 0
+        answer['new_client'] = 0
+        answer['current'] = 0
+        return Response(data={'responce':answer, 'status':{'code':200, 'message':None}},status=200)
+    staff = EmployeeOwners.objects.filter(id_owner=account.id).values('id').all()
     staff = [i['id'] for i in staff]
     engine=create_engine('postgresql://postgres:2537300@185.220.35.179:5432/postgres', echo=False)
     data=pd.read_sql_table('dayOfWorks',con=engine, schema='public')
@@ -111,7 +123,7 @@ def api_root(request, format=None):
             new_client['canceled']=0
         new_client['id']=n
         new_client['complete']=complete[n]
-        new_client['new']=count_new
+        new_client['new_clients']=count_new
         try:
             new_client['current'] = current_c['price_x'][n]/all_price_c['price_x'][n]
         except:
