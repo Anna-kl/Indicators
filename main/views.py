@@ -57,23 +57,25 @@ def api_root(request, format=None):
    # auth=Tokens.objects.filter(access=auth.split(' ')[1]).first()
    # account=Accounts.objects.filter(id_user=auth.id).first()
     account = Accounts.objects.filter(id_user=auth.id).first()
+    answer = []
     if EmployeeOwners.objects.filter(id_owner=account.id).values('id').count() == 0:
-        answer={}
-        answer['sum'] = 0
-        answer['canceled'] = 0
-        answer['orders'] = 0
-        answer['id'] = 0
-        answer['complete'] = 0
-        answer['clients'] = 0
-        answer['new_client'] = 0
-        answer['current'] = 0
+        temp_answer={}
+        temp_answer['sum'] = 0
+        temp_answer['canceled'] = 0
+        temp_answer['orders'] = 0
+        temp_answer['id'] = 0
+        temp_answer['complete'] = 0
+        temp_answer['clients'] = 0
+        temp_answer['new_client'] = 0
+        temp_answer['current'] = 0
+        answer.append((temp_answer))
         return Response(data={'responce':answer, 'status':{'code':200, 'message':None}},status=200)
     staff = EmployeeOwners.objects.filter(id_owner=account.id).values('id').all()
     staff = [i['id'] for i in staff]
     engine=create_engine('postgresql://postgres:2537300@185.220.35.179:5432/postgres', echo=False)
     data=pd.read_sql_table('dayOfWorks',con=engine, schema='public')
-    d=datetime.now()-timedelta(days=dttm[request.query_params['dttm']])
-    d1=datetime.now()
+    # d=datetime.now()-timedelta(days=dttm[request.query_params['dttm']])
+    # d1=datetime.now()
 
     data=data.loc[(data['accountId'].isin(staff))]
     concrete=pd.read_sql_table('conctereDays',con=engine, schema='public')
@@ -104,7 +106,7 @@ def api_root(request, format=None):
    # price=data['price'].sum()
    # avg=data.loc[data['iscanceled']==False]
   #  mean=avg['price'].mean()
-    answer=[]
+
     for n in staff:
         new_client={}
         all=data.loc[(data['dttm_start']<datetime.now()-timedelta(days=10))& data['accountId']==n]
