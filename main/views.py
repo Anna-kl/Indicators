@@ -84,7 +84,6 @@ def api_root(request, format=None):
     client=pd.read_sql_table('Clients',con=engine, schema='public')
     data=data.merge(concrete, how='inner', left_on=['id'], right_on=['daysof'])
     data=data.merge(client, how='left', left_on=['client_id'], right_on=['id'])
-    answer={}
     data_main=data.apply(record, axis=1)
     all_price=data_main.groupby(by=['accountId']).agg({'price_x':np.sum}).to_dict()
 
