@@ -116,20 +116,20 @@ def api_root(request, format=None):
             if a not in all:
                 count_new+=1
 
-
-        new_client['sum']=all_price['price_x'][n]
-        try:
-            new_client['canceled']=cancel[n]
-        except:
-            new_client['canceled']=0
-        new_client['id']=n
-        new_client['complete']=complete[n]
-        new_client['new_clients']=count_new
-        try:
-            new_client['current'] = current_c['price_x'][n]/all_price_c['price_x'][n]
-        except:
-            new_client['current'] = 0
-        answer.append(new_client)
+        if n in all_price['price_x'].keys():
+            new_client['sum']=all_price['price_x'][n]
+            try:
+                new_client['canceled']=cancel[n]
+            except:
+                new_client['canceled']=0
+            new_client['id']=n
+            new_client['complete']=complete[n]
+            new_client['new_clients']=count_new
+            try:
+                new_client['current'] = current_c['price_x'][n]/all_price_c['price_x'][n]
+            except:
+                new_client['current'] = 0
+            answer.append(new_client)
 
   #  answer={'count':len(data.index), 'cancelled':len(cancel), 'price':price, 'new':count_new, 'avg':mean, 'confirm': len(avg.index)}
    # data=data.loc[data['dttmStart']<datetime.now()]
